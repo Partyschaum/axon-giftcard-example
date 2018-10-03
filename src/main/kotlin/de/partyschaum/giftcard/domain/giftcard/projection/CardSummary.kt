@@ -11,16 +11,20 @@ class CardSummaryProjection {
     private val cardSummaries = mutableListOf<CardSummary>()
 
     @EventHandler
-    fun on(event: Event.Issued) {
-        cardSummaries += CardSummary(event.id, event.amount, event.amount)
+    fun on(event: Event) = when (event) {
+        is Event.Issued -> issueGiftCard(event.id, event.amount, event.amount)
+        is Event.Redeemed -> redeemGiftCard(event.id, event.amount)
     }
 
-    @EventHandler
-    fun on(event: Event.Redeemed) {
-        val cardSummary = cardSummaries.firstOrNull { event.id == it.id }
+    private fun issueGiftCard(id: String, initialAmount: Int, remainingAmount: Int) {
+        cardSummaries += CardSummary(id, initialAmount, remainingAmount)
+    }
+
+    private fun redeemGiftCard(id: String, amount: Int) {
+        val cardSummary = cardSummaries.firstOrNull { id == it.id }
         if (cardSummary != null) {
             cardSummaries -= cardSummary
-            cardSummaries += cardSummary.deductAmount(event.amount)
+            cardSummaries += cardSummary.deductAmount(amount)
         }
     }
 
