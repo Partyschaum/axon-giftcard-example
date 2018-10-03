@@ -1,16 +1,16 @@
-package de.partyschaum.gettingStartedWithAxon
+package de.partyschaum.giftcard
 
-import de.partyschaum.gettingStartedWithAxon.domain.giftcard.CardSummary
-import de.partyschaum.gettingStartedWithAxon.domain.giftcard.Command
-import de.partyschaum.gettingStartedWithAxon.domain.giftcard.GiftCard
-import de.partyschaum.gettingStartedWithAxon.domain.giftcard.Query
-import de.partyschaum.gettingStartedWithAxon.domain.giftcard.projection.CardSummaryProjection
+import de.partyschaum.giftcard.domain.giftcard.CardSummary
+import de.partyschaum.giftcard.domain.giftcard.Command
+import de.partyschaum.giftcard.domain.giftcard.GiftCard
+import de.partyschaum.giftcard.domain.giftcard.Query
+import de.partyschaum.giftcard.domain.giftcard.projection.CardSummaryProjection
+
 import org.axonframework.config.DefaultConfigurer
 import org.axonframework.config.EventHandlingConfiguration
 import org.axonframework.eventsourcing.eventstore.EmbeddedEventStore
 import org.axonframework.eventsourcing.eventstore.inmemory.InMemoryEventStorageEngine
 import org.axonframework.queryhandling.responsetypes.ResponseTypes
-
 
 object Application {
     @JvmStatic

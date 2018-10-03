@@ -1,8 +1,9 @@
-package de.partyschaum.gettingStartedWithAxon.domain.giftcard.projection
+package de.partyschaum.giftcard.domain.giftcard.projection
 
-import de.partyschaum.gettingStartedWithAxon.domain.giftcard.CardSummary
-import de.partyschaum.gettingStartedWithAxon.domain.giftcard.Event
-import de.partyschaum.gettingStartedWithAxon.domain.giftcard.Query
+import de.partyschaum.giftcard.domain.giftcard.CardSummary
+import de.partyschaum.giftcard.domain.giftcard.Event
+import de.partyschaum.giftcard.domain.giftcard.Query
+
 import org.axonframework.eventhandling.EventHandler
 import org.axonframework.queryhandling.QueryHandler
 

@@ -1,4 +1,4 @@
-package de.partyschaum.gettingStartedWithAxon.domain.giftcard
+package de.partyschaum.giftcard.domain.giftcard
 
 import org.axonframework.commandhandling.TargetAggregateIdentifier
 
