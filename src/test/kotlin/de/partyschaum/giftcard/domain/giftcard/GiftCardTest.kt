@@ -8,7 +8,6 @@ import io.kotlintest.specs.StringSpec
 import org.axonframework.test.aggregate.AggregateTestFixture
 import org.axonframework.test.aggregate.FixtureConfiguration
 
-
 class GiftCardTest : StringSpec() {
 
     lateinit var fixture: FixtureConfiguration<GiftCard>

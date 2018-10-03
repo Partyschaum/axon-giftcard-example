@@ -15,17 +15,15 @@ import org.axonframework.queryhandling.responsetypes.ResponseTypes
 object Application {
     @JvmStatic
     fun main(args: Array<String>) {
-        val cardSummaryProjection = CardSummaryProjection()
 
         val eventHandlingConfiguration = EventHandlingConfiguration()
-
-        eventHandlingConfiguration.registerEventHandler { _ -> cardSummaryProjection }
+        eventHandlingConfiguration.registerEventHandler { _ -> CardSummaryProjection() }
 
         val configuration = DefaultConfigurer.defaultConfiguration()
                 .configureAggregate(GiftCard::class.java)
                 .configureEventStore { _ -> EmbeddedEventStore(InMemoryEventStorageEngine()) }
                 .registerModule(eventHandlingConfiguration)
-                .registerQueryHandler { _ -> cardSummaryProjection }
+                .registerQueryHandler { _ -> CardSummaryProjection() }
                 .buildConfiguration()
 
         configuration.start()
