@@ -1,5 +1,5 @@
 buildscript {
-    extensions.axonVersion = 3.3
+    extensions.axonVersion = '3.3.6'
 }
 
 plugins {
@@ -18,13 +18,15 @@ apply plugin: 'application'
 mainClassName = 'de.partyschaum.giftcard.Application'
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    compile "org.axonframework:axon-core:$axonVersion"
+    compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    compile 'org.axonframework:axon-core:$axonVersion'
+
+    testCompile 'org.axonframework:axon-test:$axonVersion'
 }
 
 compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = '1.8'
 }
 compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = '1.8'
 }
