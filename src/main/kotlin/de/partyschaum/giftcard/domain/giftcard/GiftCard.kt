@@ -6,22 +6,15 @@ import org.axonframework.commandhandling.model.AggregateLifecycle
 import org.axonframework.eventsourcing.EventSourcingHandler
 
 
-class GiftCard {
+class GiftCard() {
 
     @AggregateIdentifier
     private lateinit var id: String
 
     private var remainingValue: Int = 0
 
-    constructor()
-
-    constructor(id: String, remainingValue: Int) {
-        this.id = id
-        this.remainingValue = remainingValue
-    }
-
     @CommandHandler
-    constructor(command: Command.Issue) {
+    constructor(command: Command.Issue) : this() {
         if (command.amount <= 0) throw IllegalArgumentException("amount <= 0")
         AggregateLifecycle.apply(Event.Issued(command.id, command.amount))
     }
