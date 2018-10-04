@@ -16,6 +16,7 @@ mainClassName = 'de.partyschaum.giftcard.Application'
 dependencies {
     compile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     compile 'org.axonframework:axon-core:3.3.6'
+    compile 'ch.qos.logback:logback-classic:1.2.3'
 
     compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.12'
 
