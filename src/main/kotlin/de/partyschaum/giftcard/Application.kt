@@ -1,15 +1,20 @@
 package de.partyschaum.giftcard
 
+import com.mysql.cj.jdbc.MysqlDataSource
+
 import de.partyschaum.giftcard.domain.giftcard.CardSummary
 import de.partyschaum.giftcard.domain.giftcard.Command
 import de.partyschaum.giftcard.domain.giftcard.GiftCard
 import de.partyschaum.giftcard.domain.giftcard.Query
 import de.partyschaum.giftcard.domain.giftcard.projection.CardSummaryProjection
 
+import org.axonframework.common.jdbc.DataSourceConnectionProvider
+import org.axonframework.common.transaction.NoTransactionManager
 import org.axonframework.config.DefaultConfigurer
 import org.axonframework.config.EventHandlingConfiguration
 import org.axonframework.eventsourcing.eventstore.EmbeddedEventStore
-import org.axonframework.eventsourcing.eventstore.inmemory.InMemoryEventStorageEngine
+import org.axonframework.eventsourcing.eventstore.jdbc.JdbcEventStorageEngine
+import org.axonframework.eventsourcing.eventstore.jdbc.MySqlEventTableFactory
 import org.axonframework.queryhandling.responsetypes.ResponseTypes
 
 object Application {
@@ -19,9 +24,23 @@ object Application {
         val eventHandlingConfiguration = EventHandlingConfiguration()
         eventHandlingConfiguration.registerEventHandler { _ -> CardSummaryProjection() }
 
+        val dataSource = MysqlDataSource()
+        with(dataSource) {
+            databaseName = "giftcard"
+            user = "giftcard"
+            setPassword("secret")
+            serverName = "localhost"
+        }
+
+        val connectionProvider = DataSourceConnectionProvider(dataSource)
+        val transactionManager = NoTransactionManager.instance()
+
+        val jdbcEventStorageEngine = JdbcEventStorageEngine(connectionProvider, transactionManager)
+        jdbcEventStorageEngine.createSchema(MySqlEventTableFactory())
+
         val configuration = DefaultConfigurer.defaultConfiguration()
                 .configureAggregate(GiftCard::class.java)
-                .configureEventStore { _ -> EmbeddedEventStore(InMemoryEventStorageEngine()) }
+                .configureEventStore { _ -> EmbeddedEventStore(jdbcEventStorageEngine) }
                 .registerModule(eventHandlingConfiguration)
                 .registerQueryHandler { _ -> CardSummaryProjection() }
                 .buildConfiguration()
