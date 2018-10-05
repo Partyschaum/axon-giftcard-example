@@ -2,11 +2,14 @@ package de.partyschaum.giftcard
 
 import com.mysql.cj.jdbc.MysqlDataSource
 
-import de.partyschaum.giftcard.domain.giftcard.CardSummary
-import de.partyschaum.giftcard.domain.giftcard.Command
 import de.partyschaum.giftcard.domain.giftcard.GiftCard
-import de.partyschaum.giftcard.domain.giftcard.Query
+import de.partyschaum.giftcard.domain.giftcard.boundary.thrift.ThriftHandler
 import de.partyschaum.giftcard.domain.giftcard.projection.CardSummaryProjection
+import de.partyschaum.giftcard.thrift.GiftCard.Processor
+
+import org.apache.thrift.server.TServer.Args
+import org.apache.thrift.server.TSimpleServer
+import org.apache.thrift.transport.TNonblockingServerSocket
 
 import org.axonframework.common.jdbc.DataSourceConnectionProvider
 import org.axonframework.common.transaction.NoTransactionManager
@@ -15,7 +18,6 @@ import org.axonframework.config.EventHandlingConfiguration
 import org.axonframework.eventsourcing.eventstore.EmbeddedEventStore
 import org.axonframework.eventsourcing.eventstore.jdbc.JdbcEventStorageEngine
 import org.axonframework.eventsourcing.eventstore.jdbc.MySqlEventTableFactory
-import org.axonframework.queryhandling.responsetypes.ResponseTypes
 
 object Application {
     @JvmStatic
@@ -47,19 +49,17 @@ object Application {
 
         configuration.start()
 
-        val commandGateway = configuration.commandGateway()
-        val queryGateway = configuration.queryGateway()
+        val thriftHandler = ThriftHandler(configuration.commandGateway())
 
-        commandGateway.sendAndWait<Nothing>(Command.Issue("gc1", 100))
-        commandGateway.sendAndWait<Nothing>(Command.Issue("gc2", 50))
-        commandGateway.sendAndWait<Nothing>(Command.Redeem("gc1", 10))
-        commandGateway.sendAndWait<Nothing>(Command.Redeem("gc2", 20))
+        val serverSocket = TNonblockingServerSocket(9090)
+        val serverArgs = Args(serverSocket)
+        val giftCardProcessor = Processor(thriftHandler)
+        val server = TSimpleServer(serverArgs.processor(giftCardProcessor))
 
-        val cardSummaries = queryGateway.query(
-                Query.FetchCardSummaries(2, 0),
-                ResponseTypes.multipleInstancesOf(CardSummary::class.java)
-        ).get()
-
-        cardSummaries.forEach { println(it) }
+        try {
+            server.serve()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 }
